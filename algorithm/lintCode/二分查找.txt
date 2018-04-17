@@ -1,0 +1,29 @@
+问题描述：
+	给定一个排序的整数数组（升序）和一个要查找的整数target，用O(logn)的时间查找到target第一次出现的下标（从0开始），如果target不存在于数组中，返回-1。
+	
+样例：
+	在数组 [1, 2, 3, 3, 4, 5, 10] 中二分查找3，返回2。
+	
+代码：
+	
+public class Solution {
+    /**
+     * @param nums: The integer array.
+     * @param target: Target to find.
+     * @return: The first position of target. Position starts from 0.
+     */
+    public int binarySearch(int[] nums, int target) {
+        int index = halfSearch(nums, target, 0, nums.length - 1);
+		if (index > 0) {
+			while (nums[index] == nums[index - 1]) index -- ;
+		}
+		return index;
+    }
+    private int halfSearch(int[] test, int target, int start, int end) {
+		if (start > end || start < 0 || end > test.length - 1) return -1;
+		int center = (start + end) >> 1;
+		if (test[center] == target) return center;
+		else if (test[center] < target) return halfSearch(test, target, center + 1, end);
+		else return halfSearch(test, target, start, center - 1);
+	}
+}
