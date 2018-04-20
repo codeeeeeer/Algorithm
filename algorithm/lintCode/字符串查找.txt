@@ -1,0 +1,35 @@
+问题描述:
+	对于一个给定的 source 字符串和一个 target 字符串，你应该在 source 
+	字符串中找出 target 字符串出现的第一个位置(从0开始)。如果不存在，则返回 -1。
+	
+样例：
+	如果 source = "source" 和 target = "target"，返回 -1。
+
+	如果 source = "abcdabcdefg" 和 target = "bcd"，返回 1。
+	
+	
+解决代码：
+public class Solution {
+    /*
+     * @param source: source string to be scanned.
+     * @param target: target string containing the sequence of characters to match
+     * @return: a index to the first occurrence of target in source, or -1  if target is not part of source.
+     */
+    public int strStr(String source, String target) {
+    	if (source == null || target == null) return -1;
+    	if (target.length() == 0) return 0;
+    	if (source.length() < target.length()) return -1;
+        char[] sourceArray = source.toCharArray();
+    	char[] targetArray = target.toCharArray();
+    	for (int sourceIndex = 0; sourceIndex < sourceArray.length; sourceIndex++) {
+			int j = 0;
+			for (; j < targetArray.length && sourceIndex + j < sourceArray.length; j++) {
+				//如果中间任意一个字符不匹配，则直接异常退出
+				if(sourceArray[sourceIndex + j] != targetArray[j]) break;
+			}
+			//检查target是否检测到了最后一位，并且source 和target 是否匹配
+			if (j == targetArray.length && sourceArray[sourceIndex + j - 1] == targetArray[j - 1]) return sourceIndex;
+		}
+        return -1;
+    }
+}
