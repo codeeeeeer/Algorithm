@@ -1,0 +1,30 @@
+问题描述：
+	比较两个字符串A和B，确定A中是否包含B中所有的字符。字符串A和B中的字符都是 大写字母
+	
+样例：
+给出 A = "ABCD" B = "ACD"，返回 true
+给出 A = "ABCD" B = "AABC"， 返回 false
+
+解决代码：
+
+public class Solution {
+    /**
+     * @param A: A string
+     * @param B: A string
+     * @return: if string A contains all of the characters in B return true else return false
+     */
+    public boolean compareStrings(String A, String B) {
+		if(A.length() == 0 && B.length() != 0) return false;
+		char[] sArray = A.toCharArray();
+		char[] tArray = B.toCharArray();
+		LinkedList<Character> list = new LinkedList<Character>();
+		for (Character c : sArray) {
+			list.add(c);
+		}
+		for (Character c : tArray) {
+			boolean remove = list.remove(c);
+			if (! remove) return false;
+		}
+        return true;
+    }
+}
