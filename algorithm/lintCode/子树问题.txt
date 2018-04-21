@@ -1,0 +1,69 @@
+问题描述：
+	有两个不同大小的二叉树： T1 有上百万的节点； T2 有好几百的节点。请设计一种算法，判定 T2 是否为 T1的子树。
+	
+注意事项：
+	若 T1 中存在从节点 n 开始的子树与 T2 相同，我们称 T2 是 T1 的子树。也就是说，如果在 T1 节点 n 处将树砍断，砍断的部分将与 T2 完全相同。
+	
+样例 1：
+下面的例子中 T2 是 T1 的子树：
+       1                3
+      / \              / 
+T1 = 2   3      T2 =  4
+        /
+       4
+	   
+样例 2：	
+下面的例子中 T2 不是 T1 的子树： 
+
+代码：
+/**
+ * Definition of TreeNode:
+ * public class TreeNode {
+ *     public int val;
+ *     public TreeNode left, right;
+ *     public TreeNode(int val) {
+ *         this.val = val;
+ *         this.left = this.right = null;
+ *     }
+ * }
+ */
+
+
+public class Solution {
+    /**
+     * @param T1: The roots of binary tree T1.
+     * @param T2: The roots of binary tree T2.
+     * @return: True if T2 is a subtree of T1, or false.
+     */
+	public boolean isSubTree(TreeNode t1, TreeNode t2) {
+	
+		//空树是所有树的子树
+		if (t2 == null) return true;
+		//如果t1是空树而t2不是空树，则直接返回false
+		if (t1 == null) return false;
+		
+		//如果t1的值与t2的值匹配，则查看两者是否是一样的树
+		if (t1.val == t2.val && isSameTree(t1, t2)) return true;
+		
+		//检测左子树
+		if (isSubTree(t1.left, t2)) return true;
+		//检测右子树
+		if (isSubTree(t1.right, t2)) return true;
+		return false;
+	}
+	private boolean isSameTree(TreeNode t1, TreeNode t2) {
+	
+		//如果两者都为空树，则返回true
+		if (t1 == null && t2 == null) return true;
+		//否则只要任意一棵树为空树，都不匹配
+		if (t1 == null || t2 == null) return false;
+		
+		//如果两棵树的值不匹配，则返回false
+		if (t1.val != t2.val) return false;
+		
+		//如果两者的左子树不一样，返回false
+		if ( ! isSameTree(t1.left, t2.left)) return  false;
+		if ( ! isSameTree(t1.right, t2.right)) return  false;
+		return true;
+	}
+} 
