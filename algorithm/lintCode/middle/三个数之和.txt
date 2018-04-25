@@ -1,0 +1,62 @@
+问题描述：
+	给出一个有n个整数的数组S，在S中找到三个整数a, b, c，找到所有使得a + b + c = 0的三元组。
+	
+注意事项：
+	在三元组(a, b, c)，要求a <= b <= c。
+	结果不能包含重复的三元组。
+	
+样例：
+	如S = {-1 0 1 2 -1 -4}, 你需要返回的三元组集合的是：
+
+	(-1, 0, 1)
+
+	(-1, -1, 2)
+	
+代码：
+	public class TestThreeSum {
+
+	@Test
+	public void test(){
+		System.out.println(threeSum(new int[]{1,2,33,23,2423,33,23,1,7,6,8787,5,33,2,3,-23,-54,-67,100,400,-407,-500,-35,-8,0,0,7,6,0,1,2,-56,-89}));
+	}
+    public List<List<Integer>> threeSum(int[] numbers) {
+    	List<List<Integer>> result = new ArrayList<List<Integer>>();
+        if (numbers == null || numbers.length == 0) {
+        	result.add(new ArrayList<Integer>());
+        	return result;
+		}
+        //因为结果中的每个元素是递增的，所以可以先给元素排序
+        //因为本题的主要问题不是排序，所以先使用jdk提供的排序方式
+        Arrays.sort(numbers);
+        for (int i = 0; i < numbers.length - 2; i++) {
+        	/**
+        	 * 当循环是第一次进入这里时，assetBigger不应该跳过，一下两处也是一样的
+        	 */
+        	if ( ! assertBigger(numbers, i, 0)) continue;
+			for (int j = i + 1; j < numbers.length - 1 ; j++) {
+				if ( ! assertBigger(numbers, j, i + 1)) continue;
+				for (int k = j + 1; k < numbers.length; k++) {
+					if ( ! assertBigger(numbers, k, j + 1)) continue;
+					if (numbers[i] + numbers[j] + numbers[k] == 0) {
+						//当我选择的list是LinkedList的时候，lintCode上运行所有的测试时间是1753ms
+						//当选择ArrayList的时候，测试时间则变成了1509ms,差别很大。
+						ArrayList<Integer> list = new ArrayList<Integer>();
+						list.add(numbers[i]);
+						list.add(numbers[j]);
+						list.add(numbers[k]);
+						result.add(list);
+					}
+				}
+			}
+		}
+        return result;
+    }
+    
+    /**
+     * 由于不能包含重复的三元组，二元素又是递增的，所以当碰到重复的元素时，可以选择跳过
+     */
+    private boolean assertBigger(int[] numbers, int test, int start){
+    	if (test > start) return numbers[test] > numbers[test - 1];
+    	return true;
+    }
+}
