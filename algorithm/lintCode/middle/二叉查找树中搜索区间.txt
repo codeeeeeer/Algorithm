@@ -1,0 +1,119 @@
+问题：
+	给定两个值 k1 和 k2（k1 < k2）和一个二叉查找树的根节点。找到树中所有值在 k1 到 k2 范围内的节点。即打印所有x (k1 <= x <= k2) 其中 x 是二叉查找树的中的节点值。返回所有升序的节点值。
+	
+样例：
+	如果有 k1 = 10 和 k2 = 22, 你的程序应该返回 [12, 20, 22].
+			20
+		   /  \
+		  8   22
+		 / \
+		4   12
+
+
+分析：
+二叉查找树的特性就是对于每个节点，左子树的所有节点值小于该节点值，右子树所有节点值大于该节点值。
+我们应该利用中序遍历的方式来添加节点值。
+
+代码：
+public class TestSearchRange {
+    public List<Integer> searchRange(TreeNode root, int k1, int k2) {
+    	List<Integer> result = new ArrayList<Integer>();
+    	searchRange(result, root, k1, k2);
+        return result;
+    }
+
+	private void searchRange(List<Integer> result, TreeNode node, int low, int high) {
+		if ( node == null) return;
+		//如果该节点的值小于搜索域的较小值，则该节点左边的值都不在区域内，而且节点右边的值可能
+		//会有小于较小值的节点，因此对右节点进行判定
+		if ( low > node.val ) searchRange(result, node.right, low, high);
+		//理由同上
+		else if ( high < node.val) searchRange(result, node.left, low, high);
+		else {
+			//如果节点值不小于较小值，且不大于较大值
+			//则节点左边一定不大于较大值
+			//节点右边的值一定不小于较小值
+			
+			//只要收集左边不小于较小值的节点
+			getNodesNoLessThan(result, node.left, low);
+			result.add(node.val);
+			//只要收集右边不大于较大值的节点
+			getNodesNoBiggerThan(result, node.right, high);
+		}
+	}
+
+	private void getNodesNoLessThan(List<Integer> result, TreeNode node, int low) {
+		if ( node == null) return;
+		if (node.val > low){
+			//只有当节点值大于较小值时，节点左边的节点才需要测试
+			getNodesNoLessThan(result, node.left, low);
+			result.add(node.val);
+		}else if (node.val == low){
+			result.add(node.val);
+		}
+		getNodesNoLessThan(result, node.right, low);
+	}
+	
+	private void getNodesNoBiggerThan(List<Integer> result, TreeNode node, int high) {
+		if ( node == null) return;
+		getNodesNoBiggerThan(result, node.left, high);
+		if (node.val == high){
+			result.add(node.val);
+		}else if (node.val < high){
+			//只有当节点值小于较大值时，节点右边的节点才需要测试
+			result.add(node.val);
+			getNodesNoBiggerThan(result, node.right, high);
+		}
+	}
+}
+
+以上代码在lintCode测试完所有数据用时2370+ms，但是如果我将result提取为全局变量，代码逻辑不变，则只需要2000ms左右，
+优化后的代码如下：
+
+public class Solution {
+    List<Integer> result = null;
+    /**
+     * @param root: param root: The root of the binary search tree
+     * @param k1: An integer
+     * @param k2: An integer
+     * @return: return: Return all keys that k1<=key<=k2 in ascending order
+     */
+    public List<Integer> searchRange(TreeNode root, int k1, int k2) {
+        result = new ArrayList<Integer>();
+    	searchRange1(root, k1, k2);
+        return result;
+    }
+
+	private void searchRange1(TreeNode node, int low, int high) {
+		if ( node == null) return;
+		if ( low > node.val ) searchRange1(node.right, low, high);
+		else if ( high < node.val) searchRange1(node.left, low, high);
+		else {
+			getNodesNoLessThan(node.left, low);
+			result.add(node.val);
+			getNodesNoBiggerThan(node.right, high);
+		}
+	}
+
+	private void getNodesNoLessThan(TreeNode node, int low) {
+		if ( node == null) return;
+		if (node.val > low){
+			getNodesNoLessThan(node.left, low);
+			result.add(node.val);
+		}else if (node.val == low){
+			result.add(node.val);
+		}
+		getNodesNoLessThan(node.right, low);
+	}
+	
+	private void getNodesNoBiggerThan(TreeNode node, int high) {
+		if ( node == null) return;
+		getNodesNoBiggerThan(node.left, high);
+		if (node.val == high){
+			result.add(node.val);
+		}else if (node.val < high){
+			result.add(node.val);
+			getNodesNoBiggerThan(node.right, high);
+		}
+	}
+}
