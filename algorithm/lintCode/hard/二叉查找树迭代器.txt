@@ -1,0 +1,59 @@
+问题描述：
+	设计实现一个带有下列属性的二叉查找树的迭代器：
+		元素按照递增的顺序被访问（比如中序遍历）
+		next()和hasNext()的询问操作要求均摊时间复杂度是O(1)
+		
+
+样例：
+	对于下列二叉查找树，使用迭代器进行中序遍历的结果为 [1, 6, 10, 11, 12]
+	   10
+	 /    \
+	1      11
+	 \       \
+	  6       12
+	  
+	  
+代码实现：
+
+public class BSTIterator {
+	ListNode head = null;
+	ListNode current = null;
+	ListNode next = null;
+	public BSTIterator(TreeNode root) {
+		if (root != null) {
+			//采用递归的方式对链进行初始化
+			initList(root);
+			//将next指向第一个节点
+			next = head;
+		}
+    }
+	//采用中序遍历的方式递归转化
+    private void initList(TreeNode node) {
+    	
+    	//先加载左子树
+		if (node.left != null) initList(node.left);
+		//将新节点加载在当前节点之后，并将当前节点向后移动一位
+		current = new ListNode(node, current);
+		//对head进行初始化
+		if (head == null) head = current;
+		//然后加载右子树
+		if (node.right != null) initList(node.right);
+	}
+	public boolean hasNext() {
+		return next != null;
+    }
+    public TreeNode next() {
+    	current = next;
+    	next = current.next;
+    	return current.val;
+    }
+	private static class ListNode{
+		TreeNode val;
+		ListNode next = null;
+		private ListNode(TreeNode val, ListNode previous) {
+			this.val = val;
+			if (previous != null) previous.next = this;
+		}
+		
+	}
+}
