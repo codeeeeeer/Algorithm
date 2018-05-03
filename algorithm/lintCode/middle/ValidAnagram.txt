@@ -1,0 +1,32 @@
+问题描述：
+	写出一个函数 anagram(s, t) 判断两个字符串是否可以通过改变字母的顺序变成一样的字符串。
+	
+样例：
+	给出 s = "abcd"，t="dcab"，返回 true.
+	给出 s = "ab", t = "ab", 返回 true.
+	给出 s = "ab", t = "ac", 返回 false.
+	
+解决代码：
+
+public class Solution {
+    /**
+     * @param s: The first string
+     * @param t: The second string
+     * @return: true or false
+     */
+    public boolean anagram(String s, String t) {
+        if(s.length() == 0 && t.length() == 0) return true;
+		if(s.length() != t.length()) return false;
+		char[] sArray = s.toCharArray();
+		char[] tArray = t.toCharArray();
+		LinkedList<Character> list = new LinkedList<Character>();
+		for (Character c : sArray) {
+			list.add(c);
+		}
+		for (Character c : tArray) {
+			boolean remove = list.remove(c);
+			if (! remove) return false;
+		}
+        return true;
+    }
+}
