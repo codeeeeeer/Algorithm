@@ -1,0 +1,33 @@
+问题描述：
+	给定一个包含 n 个整数的排序数组，找出给定目标值 target 的起始和结束位置。
+	
+样例展示：
+	给出[5, 7, 7, 8, 8, 10]和目标值target=8,
+	返回[3, 4]
+	
+代码：
+public class TestSearchRange {
+    public int[] searchRange(int[] A, int target) {
+        if (A == null) return new int[]{-1, -1};
+        int start = -1, end = -1;
+        //由于已知该数组是排序数组，所以可以使用二分法来查找target，这将使得该算法的时间花费为O(logN)
+        int index = halfSearch(A, target, 0, A.length - 1);
+        start = end = index;
+        if (index != -1 ) {
+        	//将start移到target开始的一位
+        	while (start > 0 && target == A[start - 1]) start -- ;
+        	//将end移到target结束的一位
+        	while (end < A.length - 1 && target == A[end + 1]) end ++ ;
+		}
+        return new int[]{start, end};
+    }
+
+    //二分搜索
+	private int halfSearch(int[] test, int target, int start, int end) {
+		if (start > end) return -1;
+		int center = (start + end) >> 1;
+		if (test[center] == target) return center;
+		else if (test[center] < target) return halfSearch(test, target, center + 1, end);
+		else return halfSearch(test, target, start, center - 1);
+	}
+}
