@@ -1,0 +1,68 @@
+问题描述：
+	在n个物品中挑选若干物品装入背包，最多能装多满？假设背包的大小为m，每个物品的大小为A[i]
+	
+注意事项：
+	你不可以将物品进行切割。
+	
+样例说明：
+	如果有4个物品[2, 3, 5, 7]
+	如果背包的大小为11，可以选择[2, 3, 5]装入背包，最多可以装满10的空间。
+	如果背包的大小为12，可以选择[2, 3, 7]装入背包，最多可以装满12的空间。
+	函数需要返回最多能装满的空间大小。
+	
+问题分析：
+	首先，我们可以先将数组进行排序，然后从某一个开始，不断地向后拾取元素放入背包中，知道不能放入为止
+	使用到的算法是深度优先算法
+	
+代码实现：
+/**
+ * @author 作者 John L:
+ * @version 创建时间：May 10, 2018 10:16:28 PM
+ */
+public class TestBackpack {
+
+	@Test
+	public void test(){
+		int[] A = new int[]{828,125,740,724,983,321,773,
+				678,841,842,875,377,674,144,340,467,625,916,
+				463,922,255,662,692,123,778,766,254,559,480,483,904,
+				60,305,966,872,935,626,691,832,998,508,657,215,162,858,
+				179,869,674,452,158,520,138,847,452,764,995,600,568,92,
+				496,533,404,186,345,304,420,181,73,547,281,374,376,454,
+				438,553,929,140,298,451,674,91,531,685,862,446,262,477,
+				573,627,624,814,103,294,388};
+		System.out.println(backPack(5000, A));
+	}
+	
+	public int backPack(int m, int[] A) {
+		//先计算数组所有元素的和，如果所有元素加起来都小于m，就没有必要继续计算了
+		int temp = 0;
+		for (int i : A) temp += i;
+		if (temp <= m) return temp;
+		//先给数组进行排序，因为本题的重点不是排序算法，所以直接调用java自带的排序算法省时省力
+        Arrays.sort(A);
+        //一开始，我们可以从index=0开始拾取，背包中已有的为0
+        return backPack(A, m, 0, 0);
+    }
+    
+	/**
+	 * @param array	已经排序好了的数组
+	 * @param total	背包的大小
+	 * @param indexFrom	只能从index后面拾取元素放入背包
+	 * @param currentCount	背包中已经装入的大小
+	 * @return 在array数组中，从indexFrom开始到length-1所能拾取的最大大小(这个值一定要小于total-currentCount)
+	 */
+    private int backPack(int[] array, int total, int indexFrom, int currentCount){
+        int max = currentCount;
+        //因为这是个排序数组，如果某一个元素的大小已经大于空闲大小，则说明不用往后面继续计算了
+        for (int i = indexFrom; i < array.length && array[i] <= total - currentCount; i ++){
+        	//我们拾取第i个放到包里面，然后从第i+1个开始，继续拾取元素填充包
+            int temp = backPack(array, total, i + 1, currentCount + array[i]);
+            //如果拾取到某一个元素后，正好能装满背包，则可以直接返回装满的大小
+            if (temp == total) return total;
+            //如果当前策略的大小大于以前的值，则更新最大值
+            max = max >= temp ? max : temp;
+        }
+        return max;
+    }
+}
