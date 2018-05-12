@@ -1,0 +1,58 @@
+问题描述：
+	给一个布尔类型的二维数组, 0 表示海, 1 表示岛。如果两个1是相邻的,那么我们认为他们是同一个岛.我们只考虑 上下左右 相邻.
+	找到大小在 k 及 k 以上的岛屿的数量
+	
+样例说明：
+给一个二维数组:
+[
+  [1, 1, 0, 0, 0],
+  [0, 1, 0, 0, 1],
+  [0, 0, 0, 1, 1],
+  [0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 1]
+]
+给出 K = 2
+返回 2
+
+解决代码：
+/**
+ * @author 作者 John L:
+ * @version 创建时间：May 12, 2018 10:20:35 AM
+ */
+public class TestIsland {
+	@Test
+	public void test(){
+		numIslands(new boolean[0][0], 20);
+	}
+	
+	public int numIslands(boolean[][] grid,int k) {
+		int count = 0;
+		for (int i = 0; i < grid.length; i++) {
+			for (int j = 0; j < grid.length; j++) {
+				//如果是陆地，并且该陆地和周围陆地组成的岛屿大小不小于k，则count++
+				if (grid[i][j] && detect(grid, i, j) >= k) {
+					count ++;
+				}
+			}
+		}
+		return count;
+	}
+
+	/**
+	 * 如果该探测节点是岛屿，则会使用深度优先搜索，将周围的岛屿都探测出来
+	 * 并且返回该节点所能探测到的数量加上节点本身的大小
+	 */
+	private int detect(boolean[][] grid, int row, int column) {
+		if (row < 0 || row > grid.length - 1
+				|| column < 0 || column > grid.length - 1
+				|| ! grid[row][column]) return 0;
+		grid[row][column] = false;
+		//如果周围都是海洋，则detect周围返回的都是0,
+		int count = 1;
+		count += detect(grid, row + 1, column);
+		count += detect(grid, row - 1, column);
+		count += detect(grid, row, column + 1);
+		count += detect(grid, row, column - 1);
+		return count;
+	}
+}
