@@ -1,0 +1,57 @@
+问题描述：
+你给出一个整数数组(size为n)，其具有以下特点：
+相邻位置的数字是不同的
+A[0] < A[1] 并且 A[n - 2] > A[n - 1]
+假定P是峰值的位置则满足A[P] > A[P-1]且A[P] > A[P+1]，返回数组中任意一个峰值的位置。
+
+样例说明：
+给出数组[1, 2, 1, 3, 4, 5, 7, 6]返回1, 即数值 2 所在位置, 或者6, 即数值 7 所在位置.
+
+
+代码实现：
+/**
+ * @author 作者 John L:
+ * @version 创建时间：May 12, 2018 5:10:47 PM
+ */
+public class TestFindPeak {
+	@Test
+	public void test() {
+		int[] A = new int[] {1, 1, 1, 3, 4, 5, 7, 5};
+		int index = findPeak(A);
+		if (index == -1)
+			System.out.println("No Peak In Array");
+		else
+			System.out.println(A[index]);
+	}
+
+	private int findPeak(int[] A) {
+//		if (A == null || A.length < 3)
+//			return -1;
+		int peakIndex = findPeak(A, 0, A.length - 1);
+		return A[peakIndex];
+	}
+
+	//使用二分查找法，获取某一区域内的峰值坐标，如果没有峰值，则返回-1
+	private int findPeak(int[] array, int start, int end) {
+		if (start == end) {
+			return isPeak(array, start) ? start : -1;
+		} else if (end > start) {
+			int center = (start + end) >> 1;
+			if (isPeak(array, center))
+				return center;
+			int temp = -1;
+			if ((temp = findPeak(array, center + 1, end)) != -1)
+				return temp;
+			if ((temp = findPeak(array, start, center - 1)) != -1)
+				return temp;
+		}
+		return -1;
+	}
+
+	//验证某一个元素是不是峰值
+	private boolean isPeak(int[] array, int index) {
+		return index > 0 && index < array.length - 1
+				&& array[index] > array[index - 1]
+				&& array[index] > array[index + 1];
+	}
+}

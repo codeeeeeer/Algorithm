@@ -1,0 +1,49 @@
+问题描述：
+	给一个01矩阵，求不同的岛屿的个数。
+	0代表海，1代表岛，如果两个1相邻，那么这两个1属于同一个岛。我们只考虑上下左右为相邻。
+	
+样例说明：
+在矩阵：
+[
+  [1, 1, 0, 0, 0],
+  [0, 1, 0, 0, 1],
+  [0, 0, 0, 1, 1],
+  [0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 1]
+]
+中有 3 个岛.
+
+代码实现：
+/**
+ * @author 作者 John L:
+ * @version 创建时间：May 12, 2018 10:20:35 AM
+ */
+public class TestIsland {
+	public int numIslands(boolean[][] grid) {
+		int count = 0;
+		for (int i = 0; i < grid.length; i++) {
+			for (int j = 0; j < grid.length; j++) {
+				//如果是岛屿则count+1，并且对该岛屿周围进行探测
+				if (grid[i][j]) {
+					count ++;
+					detect(grid, i, j);
+				}
+			}
+		}
+		return count;
+	}
+
+	/**
+	 * 如果该探测节点是岛屿，则会使用深度优先搜索，将周围的岛屿都探测出来并标记为false
+	 */
+	private void detect(boolean[][] grid, int row, int column) {
+		if (row < 0 || row > grid.length - 1
+				|| column < 0 || column > grid.length - 1
+				|| ! grid[row][column]) return;
+		grid[row][column] = false;
+		detect(grid, row + 1, column);
+		detect(grid, row - 1, column);
+		detect(grid, row, column + 1);
+		detect(grid, row, column - 1);
+	}
+}
