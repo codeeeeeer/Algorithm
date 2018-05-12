@@ -1,0 +1,51 @@
+问题描述：
+给出一张有向图，设计一个算法判断两个点 s 与 t 之间是否存在路线。
+
+样例说明：
+如下图:
+A----->B----->C
+ \     |
+  \    |
+   \   |
+    \  v
+     ->D----->E
+	 
+for s = B and t = E, return true
+
+for s = D and t = C, return false
+
+
+代码实现：
+/**
+ * @author 作者 John L:
+ * @version 创建时间：May 12, 2018 9:30:21 PM
+ */
+public class TestHasRoute {
+	/**
+	 * 在图graphNodes中，查找是否有路径从s通往t
+	 */
+	public boolean hasRoute(ArrayList<DirectedGraphNode> graphNodes,
+			DirectedGraphNode s, DirectedGraphNode t) {
+		for (DirectedGraphNode directedGraphNode : graphNodes) {
+			if (directedGraphNode == s)
+				return hasRoute(directedGraphNode, t);
+		}
+		return false;
+	}
+
+	//使用深度优先搜索算法，结合递归算法对节点及其相邻节点进行遍历
+	private boolean hasRoute(DirectedGraphNode s, DirectedGraphNode t) {
+		//如果两个测试节点的值相等，则说明直接返回true
+		if (s.label == t.label)
+			return true;
+		//如果测试节点已经没有相邻节点，则返回false
+		if (s.neighbors.size() == 0)
+			return false;
+		//对相邻节点进行深度优先搜索
+		for (DirectedGraphNode neighbor : s.neighbors) {
+			if (hasRoute(neighbor, t))
+				return true;
+		}
+		return false;
+	}
+}
