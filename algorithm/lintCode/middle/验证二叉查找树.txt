@@ -1,0 +1,54 @@
+问题描述：
+给定一个二叉树，判断它是否是合法的二叉查找树(BST)
+一棵BST定义为：
+节点的左子树中的值要严格小于该节点的值。
+节点的右子树中的值要严格大于该节点的值。
+左右子树也必须是二叉查找树。
+一个节点的树也是二叉查找树。
+
+样例说明：
+  2
+ / \
+1   4
+   / \
+  3   5
+  
+代码实现：
+
+/**
+ * @author 作者 John L:
+ * @version 创建时间：May 12, 2018 11:53:34 AM
+ */
+public class TestValidateBinaryTree {
+    public boolean isValidBST(TreeNode root) {
+        if (root == null) return true;
+        //该节点的值一定要大于其左子节点的值
+        if (root.left != null && root.left.val >= root.val) return false;
+        //该节点的值一定要小于其右子节点的值
+        if (root.right != null && root.right.val <= root.val) return false;
+        //因为我们已经保证每一个节点的右子节点的值大于该节点值，
+        //所以所有右子节点的值构成的链表是递增的，但是不能保证
+        //某个节点的左子节点的值一定是大于这个节点的父节点的值，所以需要另外验证
+        return greaterThan(root.val, root.right)
+        		&& smallerThan(root.val, root.left)
+        		&& isValidBST(root.left) 
+        		&& isValidBST(root.right);
+    }
+    
+    /**
+     * 保证该节点以及其所有节点的左子节点的值都要大于test值
+     */
+    private boolean greaterThan(int test, TreeNode node){
+    	if (node == null) return true;
+    	if (test >= node.val) return false;
+    	return greaterThan(test, node.left);
+    }
+    /**
+     * 保证该节点以及其所有节点的右子节点的值都要小于test值
+     */
+    private boolean smallerThan(int test, TreeNode node){
+    	if (node == null) return true;
+    	if (test <= node.val) return false;
+    	return smallerThan(test, node.right);
+    }
+}
